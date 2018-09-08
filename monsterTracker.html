@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dungeons and Drinking</title>
+<link rel="stylesheet" type="text/css" href="./style/layout.css" />
+
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      tb, th {
+        padding: 14px;
+        text-align:center
+      }
+      tr {
+        text-align:center;
+        background-color: #1C1f24;
+      }
+      tr:nth-child(even) {
+        background-color: #323539;
+      }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <h1>Dungeons and Drinking</h1>
+        </div>
+        <div id='container'>
+                    <a href='https://ko-fi.com/Q5Q5DSC0' target=”_blank”>
+                    <img src="./assets/images/bg.png"></a>
+         
+        </div>
+
+            <div id="contentheader">
+           <h2>Monster Tracker</h2>
+        </div>
+
+        <div id="tablecontent">
+            <p>Monster Name: <input type="text" name="name" id="mobName" value="" />
+                  HP: <input type="text" name="name" id="mobHP" value="" />
+                  <button onclick="mobList()">Add</button><button onclick="deleteLast()">Delete Last Entry</button></p>
+
+                <div id="container">
+                  <div>
+                    <table id="mobs">
+                      <tr>
+                        <th>Name</th>
+                        <th>Current HP</th>
+                        <th>/</th>
+                        <th>Total HP</th>
+                        <th>XP</th>
+                        <th>Status</th>
+                        <th>Damage</th>
+                        <th>Action</th>
+                      </tr>
+                    </table>
+                  </div>
+
+                  <button onclick="saveIt()">Save</button>
+                  <button onclick="localStorage.clear()">Delete Local Storage</button>
+
+                  <p>Number of players: <input type="text" name="name" id="numPlayers" value="7" />
+                  <button onclick="sumXp()">Calculate XP</button></p>
+                  <p id="calculated"></p>
+
+                </div>
+
+                <script type="text/javascript">
+
+                // Save table to local storage
+                function saveIt(){
+                  var table = document.getElementById("mobs");
+                  var i = 0
+                  var len = document.getElementById('mobs').rows.length
+                  for (; i < len; ) {
+                  localStorage.setItem(i, document.getElementById('mobs').rows[i].innerText);
+                  i++;
+                  }
+                };
+
+                // Sum XP column
+                function sumXp(){
+                  var table = document.getElementById("mobs");
+                  var i = 1
+                  var sumAll = 0
+                  var len = document.getElementById('mobs').rows.length
+                  for (; i < len; ) {
+                      sumAll += parseInt(document.getElementById('mobs').rows[i].cells[4].innerText);
+                  i++;
+                  }
+                  var numbP = document.getElementById('numPlayers').value;
+                  var doMath = sumAll / numbP;
+                  document.getElementById('calculated').innerHTML = "<b>Total XP:</b> " + sumAll + "<br>";
+                  document.getElementById('calculated').innerHTML += "<b>XP Per Player:</b> " + Math.round(doMath);
+
+                };
+
+                // function loadIt(){
+                //   localStorage.getItem('0');
+                // };
+
+                function deleteLast(){
+                  var numRows = document.getElementById("mobs").rows.length - 1;
+                  document.getElementById("mobs").deleteRow(numRows);
+                }
+
+                function mobList() {
+                  var tableRef = document.getElementById('mobs').getElementsByTagName('tbody')[0];
+                  // Insert a row in the table at the last row
+                  var newRow   = tableRef.insertRow(tableRef.rows.length);
+                  var numRows = document.getElementById("mobs").rows.length - 1;
+
+
+                  // Insert cells in the row at index 0
+                  var name  = newRow.insertCell(0);
+                      var nameID = numRows;
+                      name.setAttribute("id", nameID);
+                  var hp  = newRow.insertCell(1);
+                  var outOf = newRow.insertCell(2);
+                  var sHP = newRow.insertCell(3);
+                  var xP = newRow.insertCell(4);
+                  var status  = newRow.insertCell(5);
+                  var dmg  = newRow.insertCell(6);
+                  var actions  = newRow.insertCell(7);
+
+                  // Make some cell editable
+                  name.setAttribute('contentEditable', 'true');
+                  dmg.setAttribute('contentEditable', 'true');
+                  status.setAttribute('contentEditable', 'true');
+                  xP.setAttribute('contentEditable', 'true');
+
+                  // Get mob details
+                  var getName = document.getElementById('mobName');
+                  var getHP = document.getElementById('mobHP');
+
+                  // Append text nodes to the cells
+                  var newName  = document.createTextNode(getName.value);
+                  var newOutOf = document.createTextNode('/');
+                  var newHP  = document.createTextNode(getHP.value);
+                  var startHP = document.createTextNode(getHP.value);
+                  var newXp = document.createTextNode(0);
+                  var newStatus  = document.createTextNode('');
+
+                  // Action cell needs an update button
+                  var newAction = document.createElement('button');
+                      var text = document.createTextNode('Update');
+                      newAction.appendChild(text);
+                      newAction.onclick = function updateHp(){
+                        var hP = parseInt(document.getElementById('mobs').rows[nameID].cells[3].innerText);
+                        var cHP = parseInt(document.getElementById('mobs').rows[nameID].cells[1].innerText);
+                        var dmg = parseInt(document.getElementById('mobs').rows[nameID].cells[6].innerText);
+                        if (isNaN(dmg)) {
+                          alert("Incantation Failed: Damage was NaN.");
+                          return false;
+                        };
+
+                        // Change current HP based on damage
+                        document.getElementById('mobs').rows[nameID].cells[1].innerText = cHP - dmg;
+                        document.getElementById('mobs').rows[nameID].cells[1].style.color = "white";
+                        document.getElementById('mobs').rows[nameID].cells[6].innerText = null;
+                        if (parseInt(document.getElementById('mobs').rows[nameID].cells[3].innerText) / 2 >= parseInt(document.getElementById('mobs').rows[nameID].cells[1].innerText))
+                        {
+                          if (parseInt(document.getElementById('mobs').rows[nameID].cells[1].innerText) <= 0)
+                            {
+                              document.getElementById('mobs').rows[nameID].cells[1].style.backgroundColor = "black";
+                              document.getElementById('mobs').rows[nameID].cells[1].style.color = "white";
+                            } else {
+                              document.getElementById('mobs').rows[nameID].cells[1].style.backgroundColor = "red";
+                              document.getElementById('mobs').rows[nameID].cells[1].style.color = "white";
+                              };
+                        };
+                        // Reset color if healed above 1/2 health
+                        if (parseInt(document.getElementById('mobs').rows[nameID].cells[3].innerText) / 2 < parseInt(document.getElementById('mobs').rows[nameID].cells[1].innerText)){
+                          document.getElementById('mobs').rows[nameID].cells[1].style.backgroundColor = "transparent";
+                          document.getElementById('mobs').rows[nameID].cells[1].style.color = "white";
+                        };
+                        return false;
+                      };
+
+                  // Write values
+                  name.appendChild(newName);
+                  sHP.appendChild(startHP);
+                  outOf.appendChild(newOutOf);
+                  hp.appendChild(newHP);
+                  xP.appendChild(newXp);
+                  status.appendChild(newStatus);
+                  actions.appendChild(newAction);
+                };
+
+                // Sort table ... this breaks update functionality
+                function sortTable() {
+                  var table, rows, switching, i, x, y, shouldSwitch;
+                  table = document.getElementById("mobs");
+                  switching = true;
+                  /*Make a loop that will continue until
+                  no switching has been done:*/
+                  while (switching) {
+                    //start by saying: no switching is done:
+                    switching = false;
+                    rows = table.rows;
+                    /*Loop through all table rows (except the
+                    first, which contains table headers):*/
+                    for (i = 1; i < (rows.length - 1); i++) {
+                      //start by saying there should be no switching:
+                      shouldSwitch = false;
+                      /*Get the two elements you want to compare,
+                      one from current row and one from the next:*/
+                      x = rows[i].getElementsByTagName("TD")[0];
+                      y = rows[i + 1].getElementsByTagName("TD")[0];
+                      //check if the two rows should switch place:
+                      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                      }
+                    }
+                    if (shouldSwitch) {
+                      /*If a switch has been marked, make the switch
+                      and mark that a switch has been done:*/
+                      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                      switching = true;
+                    }
+                  }
+                }
+
+                </script>
+        </div>
+        
+
+        <div id="footer">
+            <p><a href="./index.htm">[Back to the Entrance]</a></p>
+            <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee (or Beer)', '#AB1000', 'Q5Q5DSC0');kofiwidget2.draw();</script><p>
+            <iframe src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FDrunkenDragonInne%2F&width=118&layout=button_count&action=like&size=small&show_faces=false&share=true&height=46&appId" width="118" height="46" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe></p>
+            <p style="text-align: right;">&copy;2018 8-bit Action!, All Rights Reserved</p>
+        </div>
+    </div>
+</body>
+</html>
