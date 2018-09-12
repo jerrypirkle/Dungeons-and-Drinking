@@ -141,6 +141,25 @@ img {
     display: block;
 }
 
+#dicebag {
+    width: 100%;
+}
+
+#left {
+    width: 20%;
+    float: left;
+}
+
+#right {
+    width: 80%;
+}
+
+.dice {
+    /*display: block;*/
+    width: 4em;
+    height: auto;
+}
+
 /* Style the tab */
 .tab {
     overflow: hidden;

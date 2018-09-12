@@ -23,15 +23,7 @@
 </head>
 <body>
     <div id="wrapper">
-        <div id="header">
-            <h1>Dungeons and Drinking</h1>
-        </div>
-        <div id='container'>
-                    <a href='https://ko-fi.com/Q5Q5DSC0' target=”_blank”>
-                    <img src="./assets/images/bg.png"></a>
-         
-        </div>
-
+  
             <div id="contentheader">
            <h2>Monster Tracker</h2>
         </div>
@@ -57,13 +49,17 @@
                     </table>
                   </div>
 
-                  <button onclick="saveIt()">Save</button>
+                  <button onclick="saveIt()">Save to Local Storage</button>
+                  <button onclick="loadIt()">Show Saved Data</button>
                   <button onclick="localStorage.clear()">Delete Local Storage</button>
 
                   <p>Number of players: <input type="text" name="name" id="numPlayers" value="7" />
                   <button onclick="sumXp()">Calculate XP</button></p>
                   <p id="calculated"></p>
 
+                </div>
+
+                <div id="load">
                 </div>
 
                 <script type="text/javascript">
@@ -96,14 +92,19 @@
 
                 };
 
-                // function loadIt(){
-                //   localStorage.getItem('0');
-                // };
+                function loadIt(){
+                    document.getElementById('load').innerHTML = ""
+                    for (var i = 0; i < localStorage.length; i++){
+                        document.getElementById('load').innerHTML += "<p>" + localStorage.getItem(localStorage.key(i)) + "</p>";
+                    }
+                };
+                 
+
 
                 function deleteLast(){
                   var numRows = document.getElementById("mobs").rows.length - 1;
                   document.getElementById("mobs").deleteRow(numRows);
-                }
+                };
 
                 function mobList() {
                   var tableRef = document.getElementById('mobs').getElementsByTagName('tbody')[0];
@@ -142,14 +143,16 @@
                   var newXp = document.createTextNode(0);
                   var newStatus  = document.createTextNode('');
 
-                  // Action cell needs an update button
+                  // Update button
+                  var history = []
                   var newAction = document.createElement('button');
-                      var text = document.createTextNode('Update');
+                      var text = document.createTextNode('Update Damage');
                       newAction.appendChild(text);
                       newAction.onclick = function updateHp(){
                         var hP = parseInt(document.getElementById('mobs').rows[nameID].cells[3].innerText);
                         var cHP = parseInt(document.getElementById('mobs').rows[nameID].cells[1].innerText);
                         var dmg = parseInt(document.getElementById('mobs').rows[nameID].cells[6].innerText);
+                        history.push(dmg)
                         if (isNaN(dmg)) {
                           alert("Incantation Failed: Damage was NaN.");
                           return false;
@@ -168,6 +171,7 @@
                             } else {
                               document.getElementById('mobs').rows[nameID].cells[1].style.backgroundColor = "red";
                               document.getElementById('mobs').rows[nameID].cells[1].style.color = "white";
+                              document.getElementById('mobs').rows[nameID].cells[5].innerText += "Bloody";
                               };
                         };
                         // Reset color if healed above 1/2 health
@@ -177,7 +181,14 @@
                         };
                         return false;
                       };
-
+                  
+                  // Damage History Button
+                  var showDmg = document.createElement('button');
+                      var btnText = document.createTextNode('Damage History');
+                      showDmg.appendChild(btnText);
+                      showDmg.onclick = function getHistory(){
+                        document.getElementById('mobs').rows[nameID].cells[5].innerText += "Hits: " + history;
+                      };
                   // Write values
                   name.appendChild(newName);
                   sHP.appendChild(startHP);
@@ -185,7 +196,7 @@
                   hp.appendChild(newHP);
                   xP.appendChild(newXp);
                   status.appendChild(newStatus);
-                  actions.appendChild(newAction);
+                  actions.append(newAction, showDmg);
                 };
 
                 // Sort table ... this breaks update functionality
@@ -230,8 +241,7 @@
 
         <div id="footer">
             <p><a href="./index.htm">[Back to the Entrance]</a></p>
-            <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee (or Beer)', '#AB1000', 'Q5Q5DSC0');kofiwidget2.draw();</script><p>
-            <iframe src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FDrunkenDragonInne%2F&width=118&layout=button_count&action=like&size=small&show_faces=false&share=true&height=46&appId" width="118" height="46" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe></p>
+            <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Buy Me a Coffee (or Beer)', '#AB1000', 'Q5Q5DSC0');kofiwidget2.draw();</script><p></p>
             <p style="text-align: right;">&copy;2018 8-bit Action!, All Rights Reserved</p>
         </div>
     </div>
