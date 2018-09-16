@@ -9,10 +9,10 @@
 function rollem(die) {
     let dieRoll = Math.floor((Math.random() * die) + 1);
     if (dieRoll == 20) {
-        let textnode = document.createTextNode("d" + die + ": " + String(dieRoll) + " - CRITICAL HIT");
+        let textnode = document.createTextNode("d" + die + ": " + String(dieRoll));
         printResult(textnode)
     } else if (dieRoll == 1) {
-        let textnode = document.createTextNode("d" + die + ": " + String(dieRoll) + " - HA!");
+        let textnode = document.createTextNode("d" + die + ": " + String(dieRoll));
         printResult(textnode)
     } else {
         let textnode = document.createTextNode("d" + die + ": " + String(dieRoll));
@@ -36,6 +36,12 @@ function printResult(textnode) {
 
 </script>
 
+<style>
+li:first-child {
+    font-size: 4em;
+} 
+</style>
+
 </head>
 <body>
     <div id="wrapper">
@@ -55,6 +61,11 @@ function printResult(textnode) {
                 <img onclick="rollem(8)" src="assets/dice/d8.svg" class="dice">
                 <img onclick="rollem(6)" src="assets/dice/d6.svg" class="dice">
                 <img onclick="rollem(4)" src="assets/dice/d4.svg" class="dice">
+                <br><br>
+                    <p><a href="./index.htm">[Back to the Entrance]</a></p>
+                    <p>Dice icons from <a href="https://game-icons.net/tags/dice.html">Game-icons.net</a></p>
+                    <p style="float:left;">&copy;2018 8-bit Action!, All Rights Reserved</p>
+
             </div>
            
             <div id="right">
@@ -63,16 +74,10 @@ function printResult(textnode) {
                 <h3>Results
                 <input type="button" onclick="clearBox('history')" value="&#x2694"></h3>
                     <div id="results"></div>
-                        <ul id="history" style="font-size: 2em">
+                        <ul id="history" style="font-size: 1em">
                             <li></li>
                         </ul>
             </div>
-        </div>
-
-        <div id="footer">
-            <p style="text-align: right;"><a href="./index.htm">[Back to the Entrance]</a></p>
-            <p style="text-align: right;">Dice icons from <a href="https://game-icons.net/tags/dice.html">Game-icons.net</a></p>
-            <p style="text-align: right;">&copy;2018 8-bit Action!, All Rights Reserved</p>
         </div>
     </div>
 </body>
